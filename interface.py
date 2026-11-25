@@ -6,7 +6,10 @@ from simulador import Simulador
 
 
 class InterfaceRotas(tk.Tk):
+    """Exibe a interface gráfica e conecta os controles às regras do simulador."""
+
     def __init__(self, arquivoInstancia):
+        """Inicializa o simulador e monta os componentes visuais da janela."""
         super().__init__()
         self.simulador = Simulador(arquivoInstancia)
         self.cidades = self.simulador.cidades
@@ -19,6 +22,7 @@ class InterfaceRotas(tk.Tk):
         self._atualizarDados()
 
     def _criarInterface(self):
+        """Cria o cabeçalho, as abas e as tabelas da janela."""
         cabecalho = ttk.Frame(self, padding=(12, 12, 12, 4))
         cabecalho.pack(fill="x")
 
@@ -66,6 +70,7 @@ class InterfaceRotas(tk.Tk):
         self._criarAbaRotas(rotas)
 
     def _criarTabela(self, pai, colunas):
+        """Cria e configura uma tabela com barras de rolagem."""
         tabela = ttk.Treeview(
             pai,
             columns=tuple(coluna[0] for coluna in colunas),
@@ -82,6 +87,7 @@ class InterfaceRotas(tk.Tk):
         return tabela
 
     def _criarAbaRotas(self, pai):
+        """Monta os controles para conexões, busca e exibição de rotas."""
         conexao = ttk.LabelFrame(pai, text="Criar conexão entre cidades", padding=10)
         conexao.pack(fill="x")
 
@@ -137,6 +143,7 @@ class InterfaceRotas(tk.Tk):
         barra.pack(side="right", fill="y")
 
     def _atualizarDados(self):
+        """Atualiza estatísticas, listas de cidades, distâncias e conexões."""
         ids = [str(cidade) for cidade in sorted(self.cidades.pontosInteresse)]
         for seletor in (self.cidadeA, self.cidadeB, self.partida, self.chegada):
             seletor["values"] = ids
@@ -182,9 +189,11 @@ class InterfaceRotas(tk.Tk):
 
     @staticmethod
     def _limparTabela(tabela):
+        """Remove todas as linhas atualmente exibidas em uma tabela."""
         tabela.delete(*tabela.get_children())
 
     def _atualizarConexoes(self):
+        """Atualiza a tabela com as conexões cadastradas no grafo."""
         self._limparTabela(self.tabelaConexoes)
         for indiceA in range(self.cidades.quantidadeCidades):
             for indiceB in range(indiceA + 1, self.cidades.quantidadeCidades):
@@ -199,6 +208,7 @@ class InterfaceRotas(tk.Tk):
                     )
 
     def _adicionarConexao(self):
+        """Lê as cidades selecionadas e tenta cadastrar uma conexão."""
         try:
             cidadeA = int(self.cidadeA.get())
             cidadeB = int(self.cidadeB.get())
@@ -214,6 +224,7 @@ class InterfaceRotas(tk.Tk):
         self._definirResultados("")
 
     def _buscarRotas(self):
+        """Obtém a partida e a chegada e mostra as rotas encontradas."""
         try:
             partida = int(self.partida.get())
             chegada = int(self.chegada.get())
@@ -234,12 +245,14 @@ class InterfaceRotas(tk.Tk):
         self._definirResultados("\n".join(linhas))
 
     def _definirResultados(self, texto):
+        """Atualiza o texto da área de resultados da interface."""
         self.resultados.configure(state="normal")
         self.resultados.delete("1.0", "end")
         self.resultados.insert("1.0", texto)
         self.resultados.configure(state="disabled")
 
     def _selecionarInstancia(self):
+        """Abre o seletor de arquivo e recarrega uma nova instância."""
         caminho = filedialog.askopenfilename(
             title="Selecionar arquivo de instâncias",
             filetypes=(("Arquivos de texto", "*.txt"), ("Todos os arquivos", "*.*")),
@@ -260,6 +273,7 @@ class InterfaceRotas(tk.Tk):
 
 
 def main():
+    """Cria a interface padrão ou mostra um erro caso ela não possa iniciar."""
     arquivoInstancia = Path(__file__).with_name("instancia.txt")
     try:
         interface = InterfaceRotas(arquivoInstancia)

@@ -20,6 +20,8 @@ Um pequeno painel para explorar cidades, criar conexões e descobrir caminhos en
   - `Simulador` reúne a instância de cidades e o grafo.
 - **`instancia.txt` — dados de exemplo:** a primeira linha informa o número de cidades; as linhas seguintes contêm as coordenadas `x y` de cada uma.
 
+As classes e funções do simulador possuem comentários breves que explicam sua responsabilidade e funcionamento.
+
 > A interface gráfica foi desenvolvida com auxílio de inteligência artificial (IA).
 
 ## Para executar

@@ -2,7 +2,10 @@ import math
 
 
 class InstanciaCidades:
+    """Carrega as cidades de um arquivo e realiza cálculos relacionados a elas."""
+
     def __init__(self, nomeArquivo):
+        """Valida o arquivo e inicializa a quantidade e as coordenadas das cidades."""
         with open(nomeArquivo, "r", encoding="utf-8") as arquivo:
             linhas = arquivo.readlines()
 
@@ -29,6 +32,7 @@ class InstanciaCidades:
 
     @staticmethod
     def _prepararListaDicionario(linhas):
+        """Converte as linhas de coordenadas em registros com ID e posição."""
         cidades = []
         for identificador, linha in enumerate(linhas, start=1):
             posicoes = linha.split()
@@ -50,22 +54,29 @@ class InstanciaCidades:
 
     @staticmethod
     def calcularDistancia(cidadeA, cidadeB):
+        """Calcula a distância euclidiana entre duas cidades."""
         deltaX = cidadeA["posicaoX"] - cidadeB["posicaoX"]
         deltaY = cidadeA["posicaoY"] - cidadeB["posicaoY"]
         return math.hypot(deltaX, deltaY)
 
     def calcularPermutacoes(self):
+        """Retorna o número de permutações possíveis das cidades."""
         return math.factorial(self.quantidadeCidades)
 
     def calcularCombinacoes(self):
+        """Retorna o número de combinações de pares de cidades."""
         return math.comb(self.quantidadeCidades, 2)
 
     def calcularRotasPossiveis(self):
+        """Retorna a quantidade teórica de rotas com uma partida fixa."""
         return math.factorial(self.quantidadeCidades - 1)
 
 
 class GrafoRotas:
+    """Representa as conexões entre cidades em uma matriz de adjacência."""
+
     def __init__(self, instancia):
+        """Inicializa um grafo vazio com base na quantidade de cidades."""
         self.instancia = instancia
         quantidade = instancia.quantidadeCidades
         self.matrizAdjacencia = [
@@ -74,6 +85,7 @@ class GrafoRotas:
         ]
 
     def adicionarConexao(self, cidadeA, cidadeB):
+        """Adiciona uma conexão bidirecional entre duas cidades válidas."""
         pontos = self.instancia.pontosInteresse
         if cidadeA not in pontos or cidadeB not in pontos:
             raise ValueError(
@@ -87,6 +99,7 @@ class GrafoRotas:
         self.matrizAdjacencia[cidadeB - 1][cidadeA - 1] = True
 
     def buscarRotas(self, partida, chegada):
+        """Busca todas as rotas simples possíveis entre partida e chegada."""
         pontos = self.instancia.pontosInteresse
         if partida not in pontos or chegada not in pontos:
             raise ValueError(
@@ -97,6 +110,7 @@ class GrafoRotas:
         rotas = []
 
         def buscar(atual, rota, distanciaTotal):
+            """Percorre recursivamente o grafo e acumula os caminhos encontrados."""
             if atual == chegada:
                 rotas.append((rota.copy(), distanciaTotal))
                 return
@@ -120,6 +134,9 @@ class GrafoRotas:
 
 
 class Simulador:
+    """Reúne os dados das cidades e o grafo usado nas rotas."""
+
     def __init__(self, nomeArquivo):
+        """Cria a instância das cidades e o grafo associado."""
         self.cidades = InstanciaCidades(nomeArquivo)
         self.grafo = GrafoRotas(self.cidades)
